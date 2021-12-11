@@ -1,13 +1,35 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+//Import the mongoose module
+const mongoose = require('mongoose');
 
-var app = express();
+//Set up default mongoose connection
+const mongoDB =
+	'mongodb+srv://MAIN:GcNrNANs3X5Nbr3@cluster0.yzzqo.mongodb.net/local-library-website?retryWrites=true&w=majority';
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+
+//Get the default connection
+const db = mongoose.connection;
+
+//Bind connection to error event (to get notification of connection errors)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+//Define a schema
+const Schema = mongoose.Schema;
+
+const SomeModelSchema = new Schema({
+	a_string: String,
+	a_date: Date,
+});
+
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
