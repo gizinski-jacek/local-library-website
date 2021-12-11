@@ -10,7 +10,7 @@ const AuthorSchema = new Schema({
 });
 
 // Virtual for author's full name
-AuthorSchema.virtual('name').get(() => {
+AuthorSchema.virtual('name').get(function () {
 	let fullname = '';
 	if (this.first_name && this.family_name) {
 		fullname = this.family_name + ', ' + this.first_name;
@@ -22,7 +22,7 @@ AuthorSchema.virtual('name').get(() => {
 });
 
 // Virtual for author's lifespan
-AuthorSchema.virtual('lifespan').get(() => {
+AuthorSchema.virtual('lifespan').get(function () {
 	let lifetime_string = '';
 	if (this.date_of_birth) {
 		lifetime_string = this.date_of_birth.getYear().toString();
@@ -34,8 +34,24 @@ AuthorSchema.virtual('lifespan').get(() => {
 	return lifetime_string;
 });
 
+// Virtual for author's lifespan formatted
+AuthorSchema.virtual('lifespan_formatted').get(function () {
+	if (!this.date_of_birth && !this.date_of_death) {
+		return 'no data';
+	}
+	let birth = '';
+	if (this.date_of_birth) {
+		birth = new Date(this.date_of_birth).toLocaleString('en-GB');
+	}
+	let death = '';
+	if (this.date_of_death) {
+		death = new Date(this.date_of_death).toLocaleString('en-GB');
+	}
+	return `${birth} - ${death}`;
+});
+
 // Virtual for author's URL
-AuthorSchema.virtual('url').get(() => {
+AuthorSchema.virtual('url').get(function () {
 	return '/catalog/author/' + this._id;
 });
 
