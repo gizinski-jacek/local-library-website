@@ -15,8 +15,13 @@ const BookInstanceSchema = new Schema({
 });
 
 // Virtual for bookinstance's URL
-BookInstanceSchema.virtual('url').get(() => {
+BookInstanceSchema.virtual('url').get(function () {
 	return '/catalog/bookinstance/' + this._id;
+});
+
+// Virtual for bookinstance's URL
+BookInstanceSchema.virtual('due_back_formatted').get(function () {
+	return new Date(this.due_back).toLocaleString('en-GB');
 });
 
 module.exports = mongoose.model('BookInstance', BookInstanceSchema);
