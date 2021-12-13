@@ -21,7 +21,12 @@ BookInstanceSchema.virtual('url').get(function () {
 
 // Virtual for bookinstance's URL
 BookInstanceSchema.virtual('due_back_formatted').get(function () {
-	return new Date(this.due_back).toLocaleString('en-GB');
+	return new Date(this.due_back).toLocaleString('en-GB', {
+		weekday: 'long',
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	});
 });
 
 module.exports = mongoose.model('BookInstance', BookInstanceSchema);

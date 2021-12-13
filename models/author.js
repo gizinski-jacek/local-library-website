@@ -37,15 +37,25 @@ AuthorSchema.virtual('lifespan').get(function () {
 // Virtual for author's lifespan formatted
 AuthorSchema.virtual('lifespan_formatted').get(function () {
 	if (!this.date_of_birth && !this.date_of_death) {
-		return 'no data';
+		return 'No lifespan data';
 	}
 	let birth = '';
 	if (this.date_of_birth) {
-		birth = new Date(this.date_of_birth).toLocaleString('en-GB');
+		birth = new Date(this.date_of_birth).toLocaleString('en-GB', {
+			weekday: 'long',
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric',
+		});
 	}
 	let death = '';
 	if (this.date_of_death) {
-		death = new Date(this.date_of_death).toLocaleString('en-GB');
+		death = new Date(this.date_of_death).toLocaleString('en-GB', {
+			weekday: 'long',
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric',
+		});
 	}
 	return `${birth} - ${death}`;
 });
