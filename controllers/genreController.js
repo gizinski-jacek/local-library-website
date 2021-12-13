@@ -1,4 +1,4 @@
-var Genre = require('../models/genre');
+const Genre = require('../models/genre');
 
 // Display list of all Genre.
 exports.genre_list = (req, res, next) => {
