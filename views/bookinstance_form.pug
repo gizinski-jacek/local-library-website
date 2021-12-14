@@ -1,7 +1,6 @@
 extends layout
 
 block content
-  h2= console.log(status_options)
   h1=title
   form(method='POST' action='')
     div.form-group
@@ -18,7 +17,7 @@ block content
       input#imprint.form-control(type='text' placeholder='Publisher and date information' name='imprint' value=(undefined===bookinstance ? '' : bookinstance.imprint))
     div.form-group
       label(for='due_back') Date when book available:
-      input#due_back.form-control(type='date' name='due_back' value=(undefined===bookinstance ? '' : bookinstance.due_back))
+      input#due_back.form-control(type='date' name='due_back' value=(undefined===bookinstance ? '' : bookinstance.due_back_formatted_for_update))
     div.form-group
       label(for='status') Status:
       select#status.form-control(type='select' placeholder='Select status' name='status' required='true')
