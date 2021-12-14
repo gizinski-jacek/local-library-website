@@ -2,7 +2,6 @@ extends layout
 
 block content
   h1 #{title}: #{author.name}
-  h2= console.log(author)
   p= author.lifespan_formatted
   if author_books.length
     p(style={color:'red'}) #[strong Delete the following books before attempting to delete this author:]
@@ -17,5 +16,5 @@ block content
     p Do you really want to delete this Author?
     form(method='POST' action='')
       div.form-group
-        input#authorid.form-control(type='hidden',name='authorid', required='true', value=author._id )
+        input#authorid.form-control(type='hidden',name='authorid' required='true' value=author._id )
       button.btn.btn-primary(type='submit') Delete
