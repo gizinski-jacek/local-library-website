@@ -61,13 +61,13 @@ exports.author_create_post = [
 		.withMessage('First name must be specified')
 		.isAlphanumeric()
 		.withMessage('First name has non-alphanumeric characters.'),
-	body('last_name')
+	body('family_name')
 		.trim()
 		.isLength({ min: 1 })
 		.escape()
-		.withMessage('Last name must be specified')
+		.withMessage('Family name must be specified')
 		.isAlphanumeric()
-		.withMessage('Last name has non-alphanumeric characters.'),
+		.withMessage('Family name has non-alphanumeric characters.'),
 	body('date_of_birth', 'Invalid date of birth')
 		.optional({ checkFalsy: true })
 		.isISO8601()
@@ -88,7 +88,7 @@ exports.author_create_post = [
 		} else {
 			const author = new Author({
 				first_name: req.body.first_name,
-				last_name: req.body.last_name,
+				family_name: req.body.family_name,
 				date_of_birth: req.body.date_of_birth,
 				date_of_death: req.body.date_of_death,
 			});
@@ -103,13 +103,64 @@ exports.author_create_post = [
 ];
 
 // Display Author delete form on GET.
-exports.author_delete_get = (req, res) => {
-	res.send('NOT IMPLEMENTED: Author delete GET');
+exports.author_delete_get = (req, res, next) => {
+	async.parallel(
+		{
+			author: (cb) => {
+				Author.findById(req.params.id).exec(cb);
+			},
+			authors_books: (cb) => {
+				Book.find({ author: req.params.id }).exec(cb);
+			},
+		},
+		(err, results) => {
+			if (err) {
+				return next(err);
+			}
+			if (results.author == null) {
+				res.redirect('/catalog/authors');
+			}
+			res.render('author_delete', {
+				title: 'Delete Author',
+				author: results.author,
+				author_books: results.authors_books,
+			});
+		}
+	);
 };
 
 // Handle Author delete on POST.
-exports.author_delete_post = (req, res) => {
-	res.send('NOT IMPLEMENTED: Author delete POST');
+exports.author_delete_post = (req, res, next) => {
+	async.parallel(
+		{
+			author: (cb) => {
+				Author.findById(req.body.authorid).exec(cb);
+			},
+			authors_books: (cb) => {
+				Book.find({ author: req.body.authorid }).exec(cb);
+			},
+		},
+		(err, results) => {
+			if (err) {
+				return next(err);
+			}
+			if (results.authors_books.length > 0) {
+				res.render('author_delete', {
+					title: 'Delete Author',
+					author: results.author,
+					author_books: results.authors_books,
+				});
+				return;
+			} else {
+				Author.findByIdAndRemove(req.body.authorid, (err) => {
+					if (err) {
+						return next(err);
+					}
+					res.redirect('/catalog/authors');
+				});
+			}
+		}
+	);
 };
 
 // Display Author update form on GET.
