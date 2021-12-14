@@ -11,7 +11,6 @@ exports.genre_list = (req, res, next) => {
 			if (err) {
 				return next(err);
 			}
-			// Successful, so render
 			res.render('genre_list', {
 				title: 'Genre List',
 				genre_list: list_genres,
@@ -35,12 +34,10 @@ exports.genre_detail = (req, res, next) => {
 				return next(err);
 			}
 			if (results.genre == null) {
-				// No results.
 				const err = new Error('Genre not found');
 				err.status = 404;
 				return next(err);
 			}
-			// Successful, so render.
 			res.render('genre_detail', {
 				title: 'Genre Detail',
 				genre: results.genre,

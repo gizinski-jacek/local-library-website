@@ -11,7 +11,6 @@ exports.author_list = (req, res, next) => {
 			if (err) {
 				return next(err);
 			}
-			//Successful, so render
 			res.render('author_list', {
 				title: 'Author List',
 				author_list: list_authors,
@@ -33,14 +32,12 @@ exports.author_detail = (req, res, next) => {
 		(err, results) => {
 			if (err) {
 				return next(err);
-			} // Error in API usage.
+			}
 			if (results.author == null) {
-				// No results.
-				var err = new Error('Author not found');
+				const err = new Error('Author not found');
 				err.status = 404;
 				return next(err);
 			}
-			// Successful, so render.
 			res.render('author_detail', {
 				title: 'Author Detail',
 				author: results.author,
