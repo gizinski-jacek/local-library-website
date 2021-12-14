@@ -171,7 +171,7 @@ exports.book_create_post = [
 			);
 			return;
 		} else {
-			book.save(function (err) {
+			book.save((err) => {
 				if (err) {
 					return next(err);
 				}
