@@ -60,6 +60,30 @@ AuthorSchema.virtual('lifespan_formatted').get(function () {
 	return `${birth} - ${death}`;
 });
 
+// Virtual for author's birth date formatted for use in update page
+AuthorSchema.virtual('lifespan_formatted_for_update').get(function () {
+	if (!this.date_of_birth) {
+		return '';
+	}
+	let birth = '';
+	if (this.date_of_birth) {
+		birth = new Date(this.date_of_birth).toISOString().split('T')[0];
+	}
+	return birth;
+});
+
+// Virtual for author's death date formatted for use in update page
+AuthorSchema.virtual('lifespan_formatted_for_update').get(function () {
+	if (!this.date_of_death) {
+		return '';
+	}
+	let death = '';
+	if (this.date_of_death) {
+		death = new Date(this.date_of_death).toISOString().split('T')[0];
+	}
+	return death;
+});
+
 // Virtual for author's URL
 AuthorSchema.virtual('url').get(function () {
 	return '/catalog/author/' + this._id;

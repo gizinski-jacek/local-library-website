@@ -19,7 +19,7 @@ BookInstanceSchema.virtual('url').get(function () {
 	return '/catalog/bookinstance/' + this._id;
 });
 
-// Virtual for bookinstance's URL
+// Virtual for bookinstance's due back date formatted
 BookInstanceSchema.virtual('due_back_formatted').get(function () {
 	return new Date(this.due_back).toLocaleString('en-GB', {
 		weekday: 'long',
@@ -27,6 +27,11 @@ BookInstanceSchema.virtual('due_back_formatted').get(function () {
 		month: 'long',
 		day: 'numeric',
 	});
+});
+
+// Virtual for bookinstance's due back date formatted for use in update page
+BookInstanceSchema.virtual('due_back_formatted_for_update').get(function () {
+	return new Date(this.due_back).toISOString().split('T')[0];
 });
 
 module.exports = mongoose.model('BookInstance', BookInstanceSchema);
