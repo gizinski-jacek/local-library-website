@@ -8,20 +8,20 @@ const { body, validationResult } = require('express-validator');
 exports.index = (req, res) => {
 	async.parallel(
 		{
-			book_count: (callback) => {
-				Book.countDocuments({}, callback); // Pass an empty object as match condition to find all documents of this collection
+			book_count: (cb) => {
+				Book.countDocuments({}, cb); // Pass an empty object as match condition to find all documents of this collection
 			},
-			book_instance_count: (callback) => {
-				BookInstance.countDocuments({}, callback);
+			book_instance_count: (cb) => {
+				BookInstance.countDocuments({}, cb);
 			},
-			book_instance_available_count: (callback) => {
-				BookInstance.countDocuments({ status: 'Available' }, callback);
+			book_instance_available_count: (cb) => {
+				BookInstance.countDocuments({ status: 'Available' }, cb);
 			},
-			author_count: (callback) => {
-				Author.countDocuments({}, callback);
+			author_count: (cb) => {
+				Author.countDocuments({}, cb);
 			},
-			genre_count: (callback) => {
-				Genre.countDocuments({}, callback);
+			genre_count: (cb) => {
+				Genre.countDocuments({}, cb);
 			},
 		},
 		(err, results) => {
