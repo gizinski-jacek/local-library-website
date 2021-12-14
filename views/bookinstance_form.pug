@@ -1,6 +1,7 @@
 extends layout
 
 block content
+  h2= console.log(status_options)
   h1=title
   form(method='POST' action='')
     div.form-group
@@ -14,17 +15,18 @@ block content
             option(value=book._id) #{book.title}
     div.form-group
       label(for='imprint') Imprint:
-      input#imprint.form-control(type='text' placeholder='Publisher and date information' name='imprint' required='true' value=(undefined===bookinstance ? '' : bookinstance.imprint))
+      input#imprint.form-control(type='text' placeholder='Publisher and date information' name='imprint' value=(undefined===bookinstance ? '' : bookinstance.imprint))
     div.form-group
       label(for='due_back') Date when book available:
       input#due_back.form-control(type='date' name='due_back' value=(undefined===bookinstance ? '' : bookinstance.due_back))
     div.form-group
       label(for='status') Status:
       select#status.form-control(type='select' placeholder='Select status' name='status' required='true')
-        option(value='Maintenance') Maintenance
-        option(value='Available') Available
-        option(value='Loaned') Loaned
-        option(value='Reserved') Reserved
+        each option in status_options 
+          if (option == status)
+            option(value=option selected) #{option}
+          else
+            option(value=option) #{option}
     button.btn.btn-primary(type='submit') Submit
 
   if errors

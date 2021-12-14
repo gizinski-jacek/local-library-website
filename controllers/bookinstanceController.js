@@ -46,6 +46,7 @@ exports.bookinstance_create_get = (req, res, next) => {
 		res.render('bookinstance_form', {
 			title: 'Create BookInstance',
 			book_list: books,
+			status_options: ['Maintenance', 'Available', 'Loaned', 'Reserved'],
 		});
 	});
 };
@@ -70,6 +71,7 @@ exports.bookinstance_create_post = [
 			status: req.body.status,
 			due_back: req.body.due_back,
 		});
+		console.log();
 		if (!errors.isEmpty()) {
 			Book.find({}, 'title').exec((err, books) => {
 				if (err) {
@@ -79,6 +81,13 @@ exports.bookinstance_create_post = [
 					title: 'Create BookInstance',
 					book_list: books,
 					selected_book: bookinstance.book._id,
+					status_options: [
+						'Maintenance',
+						'Available',
+						'Loaned',
+						'Reserved',
+					],
+					status: bookinstance.status,
 					errors: errors.array(),
 					bookinstance: bookinstance,
 				});
