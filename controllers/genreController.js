@@ -59,7 +59,6 @@ exports.genre_create_post = [
 		const errors = validationResult(req);
 		const genre = new Genre({ name: req.body.name });
 		if (!errors.isEmpty()) {
-			console.log(errors);
 			res.render('genre_form', {
 				title: 'Create Genre',
 				genre: genre,
@@ -86,21 +85,21 @@ exports.genre_create_post = [
 ];
 
 // Display Genre delete form on GET.
-exports.genre_delete_get = (req, res) => {
+exports.genre_delete_get = (req, res, next) => {
 	res.send('NOT IMPLEMENTED: Genre delete GET');
 };
 
 // Handle Genre delete on POST.
-exports.genre_delete_post = (req, res) => {
+exports.genre_delete_post = (req, res, next) => {
 	res.send('NOT IMPLEMENTED: Genre delete POST');
 };
 
 // Display Genre update form on GET.
-exports.genre_update_get = (req, res) => {
+exports.genre_update_get = (req, res, next) => {
 	res.send('NOT IMPLEMENTED: Genre update GET');
 };
 
 // Handle Genre update on POST.
-exports.genre_update_post = (req, res) => {
+exports.genre_update_post = (req, res, next) => {
 	res.send('NOT IMPLEMENTED: Genre update POST');
 };
