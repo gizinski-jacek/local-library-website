@@ -1,5 +1,9 @@
 const BookInstance = require('../models/bookinstance');
 const Book = require('../models/book');
+const async = require('async');
+
+const status_options = ['Maintenance', 'Available', 'Loaned', 'Reserved'];
+
 const { body, validationResult } = require('express-validator');
 
 // Display list of all BookInstances.
@@ -71,7 +75,6 @@ exports.bookinstance_create_post = [
 			status: req.body.status,
 			due_back: req.body.due_back,
 		});
-		console.log();
 		if (!errors.isEmpty()) {
 			Book.find({}, 'title').exec((err, books) => {
 				if (err) {
@@ -81,12 +84,7 @@ exports.bookinstance_create_post = [
 					title: 'Create BookInstance',
 					book_list: books,
 					selected_book: bookinstance.book._id,
-					status_options: [
-						'Maintenance',
-						'Available',
-						'Loaned',
-						'Reserved',
-					],
+					status_options: status_options,
 					status: bookinstance.status,
 					errors: errors.array(),
 					bookinstance: bookinstance,
@@ -105,21 +103,111 @@ exports.bookinstance_create_post = [
 ];
 
 // Display BookInstance delete form on GET.
-exports.bookinstance_delete_get = (req, res) => {
-	res.send('NOT IMPLEMENTED: BookInstance delete GET');
+exports.bookinstance_delete_get = (req, res, next) => {
+	BookInstance.findById(req.params.id)
+		.populate('book')
+		.exec((err, bookinstance) => {
+			if (err) {
+				return next(err);
+			}
+			if (bookinstance == null) {
+				res.redirect('/catalog/bookinstances');
+			}
+			res.render('bookinstance_delete', {
+				title: 'Delete copy',
+				bookinstance: bookinstance,
+			});
+		});
 };
 
 // Handle BookInstance delete on POST.
-exports.bookinstance_delete_post = (req, res) => {
-	res.send('NOT IMPLEMENTED: BookInstance delete POST');
+exports.bookinstance_delete_post = (req, res, next) => {
+	BookInstance.findByIdAndRemove(req.body.bookinstanceid, (err) => {
+		if (err) {
+			return next(err);
+		}
+		res.redirect('/catalog/bookinstances');
+	});
 };
 
 // Display BookInstance update form on GET.
-exports.bookinstance_update_get = (req, res) => {
-	res.send('NOT IMPLEMENTED: BookInstance update GET');
+exports.bookinstance_update_get = (req, res, next) => {
+	async.parallel(
+		{
+			bookinstance: (cb) => {
+				BookInstance.findById(req.params.id).exec(cb);
+			},
+			book: (cb) => {
+				Book.find({}, 'title').exec(cb);
+			},
+		},
+		(err, results) => {
+			// console.log(results.bookinstance.due_back);
+			if (err) {
+				return next(err);
+			}
+			if (results.bookinstance == null) {
+				res.redirect('/catalog/bookinstance');
+			}
+			res.render('bookinstance_form', {
+				bookinstance: results.bookinstance,
+				book_list: results.book,
+				status_options: status_options,
+				status: results.bookinstance.status,
+			});
+		}
+	);
 };
 
 // Handle bookinstance update on POST.
-exports.bookinstance_update_post = (req, res) => {
-	res.send('NOT IMPLEMENTED: BookInstance update POST');
-};
+exports.bookinstance_update_post = [
+	body('book', 'Book must be specified').trim().isLength({ min: 1 }).escape(),
+	body('imprint', 'Imprint must be specified')
+		.trim()
+		.isLength({ min: 1 })
+		.escape(),
+	body('status').escape(),
+	body('due_back', 'Invalid date')
+		.optional({ checkFalsy: true })
+		.isISO8601()
+		.toDate(),
+	(req, res, next) => {
+		const errors = validationResult(req);
+		const bookinstance = new BookInstance({
+			book: req.body.book,
+			imprint: req.body.imprint,
+			status: req.body.status,
+			due_back: req.body.due_back,
+			_id: req.params.id, // This is required, or a new ID will be assigned!
+		});
+		if (!errors.isEmpty()) {
+			Book.find({}, 'title').exec((err, books) => {
+				if (err) {
+					return next(err);
+				}
+				res.render('bookinstance_form', {
+					title: 'Create BookInstance',
+					book_list: books,
+					selected_book: bookinstance.book._id,
+					status_options: status_options,
+					status: bookinstance.status,
+					errors: errors.array(),
+					bookinstance: bookinstance,
+				});
+			});
+			return;
+		} else {
+			BookInstance.findByIdAndUpdate(
+				req.params.id,
+				bookinstance,
+				{},
+				(err, thebookinstance) => {
+					if (err) {
+						return next(err);
+					}
+					res.redirect(thebookinstance.url);
+				}
+			);
+		}
+	},
+];
