@@ -42,18 +42,16 @@ AuthorSchema.virtual('lifespan_formatted').get(function () {
 	let birth = '';
 	if (this.date_of_birth) {
 		birth = new Date(this.date_of_birth).toLocaleString('en-GB', {
-			weekday: 'long',
 			year: 'numeric',
-			month: 'long',
+			month: 'numeric',
 			day: 'numeric',
 		});
 	}
 	let death = '';
 	if (this.date_of_death) {
 		death = new Date(this.date_of_death).toLocaleString('en-GB', {
-			weekday: 'long',
 			year: 'numeric',
-			month: 'long',
+			month: 'numeric',
 			day: 'numeric',
 		});
 	}
@@ -61,7 +59,7 @@ AuthorSchema.virtual('lifespan_formatted').get(function () {
 });
 
 // Virtual for author's birth date formatted for use in update page
-AuthorSchema.virtual('lifespan_formatted_for_update').get(function () {
+AuthorSchema.virtual('birth_formatted_for_update').get(function () {
 	if (!this.date_of_birth) {
 		return '';
 	}
@@ -73,7 +71,7 @@ AuthorSchema.virtual('lifespan_formatted_for_update').get(function () {
 });
 
 // Virtual for author's death date formatted for use in update page
-AuthorSchema.virtual('lifespan_formatted_for_update').get(function () {
+AuthorSchema.virtual('death_formatted_for_update').get(function () {
 	if (!this.date_of_death) {
 		return '';
 	}
