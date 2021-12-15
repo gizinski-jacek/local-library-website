@@ -86,20 +86,108 @@ exports.genre_create_post = [
 
 // Display Genre delete form on GET.
 exports.genre_delete_get = (req, res, next) => {
-	res.send('NOT IMPLEMENTED: Genre delete GET');
+	async.parallel(
+		{
+			genre: (cb) => {
+				Genre.findById(req.params.id).exec(cb);
+			},
+			genre_books: (cb) => {
+				Book.find({ genre: req.params.id }).exec(cb);
+			},
+		},
+		(err, results) => {
+			if (err) {
+				return next(err);
+			}
+			if (results.genre == null) {
+				res.redirect('/catalog/genres');
+			}
+			res.render('genre_delete', {
+				title: 'Delete Genre',
+				genre: results.genre,
+				genre_books: results.genre_books,
+			});
+		}
+	);
 };
 
 // Handle Genre delete on POST.
 exports.genre_delete_post = (req, res, next) => {
-	res.send('NOT IMPLEMENTED: Genre delete POST');
+	async.parallel(
+		{
+			genre: (cb) => {
+				Genre.findById(req.params.id).exec(cb);
+			},
+			genre_books: (cb) => {
+				Book.find({ genre: req.params.id }).exec(cb);
+			},
+		},
+		(err, results) => {
+			if (err) {
+				return next(err);
+			}
+			if (results.genre_books > 0) {
+				res.render('genre_delete', {
+					title: 'Delete Genre',
+					genre: results.genre,
+					genre_books: genre_books,
+				});
+				return;
+			} else {
+				Genre.findByIdAndDelete(req.body.genreid, (err) => {
+					if (err) {
+						return next(err);
+					}
+					res.redirect('/catalog/genres');
+				});
+			}
+		}
+	);
 };
 
 // Display Genre update form on GET.
 exports.genre_update_get = (req, res, next) => {
-	res.send('NOT IMPLEMENTED: Genre update GET');
+	Genre.findById(req.params.id).exec((err, genre) => {
+		if (err) {
+			return next(err);
+		}
+		if (genre == null) {
+			res.redirect('/catalog/genres');
+		}
+		res.render('genre_form', {
+			title: 'Update Genre',
+			genre: genre,
+		});
+	});
 };
 
 // Handle Genre update on POST.
-exports.genre_update_post = (req, res, next) => {
-	res.send('NOT IMPLEMENTED: Genre update POST');
-};
+exports.genre_update_post = [
+	body('name', 'Genre name required').trim().isLength({ min: 1 }).escape(),
+	(req, res, next) => {
+		const errors = validationResult(req);
+		const genre = new Genre({
+			name: req.body.name,
+			_id: req.params.id, // This is required, or a new ID will be assigned!
+		});
+		if (!errors.isEmpty()) {
+			res.render('genre_form', {
+				title: 'Update Genre',
+				genre: genre,
+				errors: errors.array(),
+			});
+		} else {
+			Genre.findByIdAndUpdate(
+				req.params.id,
+				genre,
+				{},
+				(err, thegenre) => {
+					if (err) {
+						return next(err);
+					}
+					res.redirect(thegenre.url);
+				}
+			);
+		}
+	},
+];
