@@ -15,7 +15,7 @@ exports.bookinstance_list = (req, res) => {
 				return next(err);
 			}
 			res.render('bookinstance_list', {
-				title: 'Book Instance List',
+				title: 'Book Copies List',
 				bookinstance_list: list_bookinstances,
 			});
 		});
@@ -142,7 +142,6 @@ exports.bookinstance_update_get = (req, res, next) => {
 			},
 		},
 		(err, results) => {
-			// console.log(results.bookinstance.due_back);
 			if (err) {
 				return next(err);
 			}
@@ -150,6 +149,7 @@ exports.bookinstance_update_get = (req, res, next) => {
 				res.redirect('/catalog/bookinstance');
 			}
 			res.render('bookinstance_form', {
+				title: 'Update Book Copy',
 				bookinstance: results.bookinstance,
 				book_list: results.book,
 				status_options: status_options,
@@ -186,7 +186,7 @@ exports.bookinstance_update_post = [
 					return next(err);
 				}
 				res.render('bookinstance_form', {
-					title: 'Create BookInstance',
+					title: 'Update Book Copy',
 					book_list: books,
 					selected_book: bookinstance.book._id,
 					status_options: status_options,
