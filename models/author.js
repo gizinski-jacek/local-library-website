@@ -37,9 +37,9 @@ AuthorSchema.virtual('lifespan').get(function () {
 // Virtual for author's lifespan formatted
 AuthorSchema.virtual('lifespan_formatted').get(function () {
 	if (!this.date_of_birth && !this.date_of_death) {
-		return 'No lifespan data';
+		return 'no data';
 	}
-	let birth = '';
+	let birth = 'no data';
 	if (this.date_of_birth) {
 		birth = new Date(this.date_of_birth).toLocaleString('en-GB', {
 			year: 'numeric',
@@ -47,7 +47,7 @@ AuthorSchema.virtual('lifespan_formatted').get(function () {
 			day: 'numeric',
 		});
 	}
-	let death = '';
+	let death = 'no data';
 	if (this.date_of_death) {
 		death = new Date(this.date_of_death).toLocaleString('en-GB', {
 			year: 'numeric',

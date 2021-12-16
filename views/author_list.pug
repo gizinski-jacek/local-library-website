@@ -6,6 +6,6 @@ block content
     each author in author_list
       li
         a(href=author.url) #{author.name}
-        |  (#{author.lifespan_formatted})
+        |  Lifespan: #{author.lifespan_formatted}
     else
       li There are no authors.
