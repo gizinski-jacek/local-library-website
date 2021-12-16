@@ -11,8 +11,9 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 
 //Set up default mongoose connection
-const mongoDB =
+const dev_db_url =
 	'mongodb+srv://MAIN:GcNrNANs3X5Nbr3@cluster0.yzzqo.mongodb.net/local-library-website?retryWrites=true&w=majority';
+const mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 
 //Get the default connection
@@ -30,7 +31,6 @@ const SomeModelSchema = new Schema({
 });
 
 const indexRouter = require('./routes/index');
-const catalogRouter = require('./routes/catalog');
 
 const app = express();
 
