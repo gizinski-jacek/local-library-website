@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const indexRouter = require('./routes/index');
 const catalogRouter = require('./routes/catalog'); //Import routes for "catalog" area of site
 const compression = require('compression');
 const helmet = require('helmet');
@@ -21,16 +22,6 @@ const db = mongoose.connection;
 
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-//Define a schema
-const Schema = mongoose.Schema;
-
-const SomeModelSchema = new Schema({
-	a_string: String,
-	a_date: Date,
-});
-
-const indexRouter = require('./routes/index');
 
 const app = express();
 
