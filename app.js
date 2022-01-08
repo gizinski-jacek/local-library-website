@@ -1,3 +1,4 @@
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -12,9 +13,7 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 
 //Set up default mongoose connection
-const dev_db_url =
-	'mongodb+srv://MAIN-PROD:FickVgiv6LjFtap@cluster0.yzzqo.mongodb.net/local-library-website?retryWrites=true&w=majority';
-const mongoDB = process.env.MONGODB_URI || dev_db_url;
+const mongoDB = process.env.MONGODB_URI;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 
 //Get the default connection
